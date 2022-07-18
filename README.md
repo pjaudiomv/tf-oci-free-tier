@@ -1,5 +1,8 @@
 # Creates Free Tier OCI Instance With Apache/PHP/Mysql
 
+* Defaults to ARM based
+
+
 ## Requirements
 
 | Name | Version |

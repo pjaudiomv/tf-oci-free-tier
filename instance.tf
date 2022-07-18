@@ -2,7 +2,7 @@ resource "oci_core_instance" "free" {
   availability_domain = oci_core_subnet.free.availability_domain
   compartment_id      = data.oci_identity_compartment.default.id
   display_name        = "free-${terraform.workspace}"
-  shape               = "VM.Standard.E2.1.Micro"
+  shape               = "VM.Standard.A1.Flex" # VM.Standard.E2.1.Micro If Using AMD
 
   create_vnic_details {
     assign_public_ip = false
@@ -18,7 +18,15 @@ resource "oci_core_instance" "free" {
 
   source_details {
     source_type = "image"
-    source_id   = data.oci_core_images.ubuntu_jammy.images.0.id
+    source_id   = data.oci_core_images.ubuntu_jammy_arm.images.0.id
+    # data.oci_core_images.ubuntu_jammy.images.0.id
+    # If Using AMD
+  }
+
+  #  Remove this block If Using AMD
+  shape_config {
+    ocpus         = 2 # Can be up to 4 for free tier
+    memory_in_gbs = 8 # Can be up to 24 for free tier
   }
 }
 
@@ -113,6 +121,16 @@ data "oci_core_images" "ubuntu_jammy" {
   filter {
     name   = "display_name"
     values = ["^Canonical-Ubuntu-22.04-([\\.0-9-]+)$"]
+    regex  = true
+  }
+}
+
+data "oci_core_images" "ubuntu_jammy_arm" {
+  compartment_id   = data.oci_identity_compartment.default.id
+  operating_system = "Canonical Ubuntu"
+  filter {
+    name   = "display_name"
+    values = ["^Canonical-Ubuntu-22.04-aarch64-([\\.0-9-]+)$"]
     regex  = true
   }
 }

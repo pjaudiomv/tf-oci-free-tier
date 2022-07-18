@@ -1,0 +1,7 @@
+.idea
+.DS_Store
+.terraform
+backend.tf
+*.tfstate
+*.tfstate.*
+settings.auto.tfvars
